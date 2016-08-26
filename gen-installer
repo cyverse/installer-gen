@@ -72,7 +72,7 @@ if [ "\$#" -ge 1 ]
 then
   readonly INSTALL_BASE="\$1"
 else
-  readonly DefaultInstallBase="\$PWD"
+  readonly DefaultInstallBase="\$HOME"
   read -r -p "Where would you like to install it? [\$DefaultInstallBase] " ans
   case "$\ans" 
   in
