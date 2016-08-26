@@ -1,0 +1,103 @@
+#! /bin/bash
+
+usage()
+{
+  cat <<EOH
+Usage: $(basename "$0") INSTALLER_NAME TGZ [SETUP_SCRIPT]
+
+This script creates an installer.
+
+INSTALLER_NAME is the name of the installer to be created. 
+
+TGZ is gnu compressed tar file encapsulating the contents of the software to be 
+installed. 
+
+If provided, SETUP_SCRIPT is a POSIX shell script that sets up the software once
+TGZ has been expanded.
+
+The created installer will accept an optional command line argument allowing the
+user to specify where the contents of TGZ will be expanded. If the user doesn't
+specify the location on the command line, the user will be asked.
+
+If SETUP_SCRIPT is provided, the absolute path to the contents of TGZ will be 
+exported in the variable INSTALL_BASE.
+EOH
+}
+
+
+wrap_script()
+{
+  local script="$1"
+
+  if [ -n "$script" ]
+  then
+    printf 'sh -c "'
+    sed '{ s/^\(# TGZ BELOW.*\)/#\1/
+           s/\\/\\\\/g
+           s/"/\\"/g }' "$script"
+    printf '"'
+  fi
+}
+
+
+if [ "$#" -ge 1 ]
+then
+  readonly Installer="$1"
+else
+  printf 'Requires the name of the generated install script as the first argument\n\n' >&2
+  printf '%s\n' "$(usage)" >&2
+  exit 1
+fi
+
+if [ "$#" -ge 2 ]
+then
+  readonly Tgz="$2"
+else
+  printf 'Requires the name of the gzipped tar file as the second argument\n\n' >&2
+  printf '%s\n' "$(usage)" >&2
+  exit 1
+fi
+
+if [ "$#" -ge 3 ]
+then
+  readonly PostScript="$3"
+fi
+
+cat - "$Tgz" <<EOS >"$Installer"
+#! /bin/sh
+
+set -e
+
+if [ "\$#" -ge 1 ]
+then
+  readonly INSTALL_BASE="\$1"
+else
+  readonly DefaultInstallBase="\$PWD"
+  read -r -p "Where would you like to install it? [\$DefaultInstallBase] " ans
+  case "$\ans" 
+  in
+    "")
+      readonly INSTALL_BASE="\$DefaultInstallBase"
+      ;;
+    /*)
+      readonly INSTALL_BASE="\$ans"
+      ;;
+    *)
+      readonly INSTALL_BASE="\$PWD"/"\$ans"
+      ;;
+  esac
+fi
+export INSTALL_BASE
+
+mkdir --parents "\$INSTALL_BASE"
+
+tgzBegins=\$(awk '/^# TGZ BELOW/ { print NR + 1; exit 0; }' "\$0")
+tail --lines +"\$tgzBegins" "\$0" | tar --extract --gunzip --directory "\$INSTALL_BASE"
+
+$(wrap_script "$PostScript")
+
+exit 0
+
+# TGZ BELOW
+EOS
+
