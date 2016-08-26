@@ -91,6 +91,7 @@ export INSTALL_BASE
 
 mkdir --parents "\$INSTALL_BASE"
 
+printf 'Expanding contents under %s.\\n' "\$INSTALL_BASE"  
 tgzBegins=\$(awk '/^# TGZ BELOW/ { print NR + 1; exit 0; }' "\$0")
 tail --lines +"\$tgzBegins" "\$0" | tar --extract --gunzip --directory "\$INSTALL_BASE"
 
