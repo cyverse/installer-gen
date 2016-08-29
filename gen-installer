@@ -75,7 +75,7 @@ then
 else
   readonly DefaultInstallBase="\$HOME"
   read -r -p "Where would you like to install it? [\$DefaultInstallBase] " ans
-  case "$\ans" 
+  case "\$ans" 
   in
     "")
       readonly INSTALL_BASE="\$DefaultInstallBase"
