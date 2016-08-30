@@ -36,6 +36,8 @@ wrap_script()
 }
 
 
+set -e
+
 if [ "$#" -ge 1 ]
 then
   readonly Installer="$1"
