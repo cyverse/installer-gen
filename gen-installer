@@ -89,7 +89,7 @@ else
       readonly INSTALL_BASE="\$ans"
       ;;
     *)
-      readonly INSTALL_BASE="\$PWD"/"\$ans"
+      readonly INSTALL_BASE="\${PWD%/}"/"\$ans"
       ;;
   esac
 fi
