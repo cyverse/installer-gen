@@ -33,7 +33,7 @@ wrap_script()
   then
     printf 'sh -c "'
     sed '{ s/^\(# TGZ BELOW.*\)/#\1/
-           s/\\/\\\\/g
+           s/\\/\\\\\\/g
            s/"/\\"/g 
          }' "$script"
     printf '"'
