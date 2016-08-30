@@ -31,12 +31,7 @@ wrap_script()
 
   if [ -n "$script" ]
   then
-    printf 'sh -c "'
-    sed '{ s/^\(# TGZ BELOW.*\)/#\1/
-           s/\\/\\\\\\/g
-           s/"/\\"/g 
-         }' "$script"
-    printf '"'
+    printf 'sh -c "$(echo %s | base64 --decode)"' $(base64 --wrap 0 "$script")
   fi
 }
 
