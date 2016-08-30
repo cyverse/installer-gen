@@ -71,7 +71,12 @@ set -e
 
 if [ "\$#" -ge 1 ]
 then
-  readonly INSTALL_BASE="\$1"
+  if [ "\${1:0:1}" == / ]
+  then
+    readonly INSTALL_BASE="\$1"
+  else
+    readonly INSTALL_BASE="\$PWD"/"\$1"
+  fi
 else
   readonly DefaultInstallBase="\$HOME"
   read -r -p "Where would you like to install it? [\$DefaultInstallBase] " ans
