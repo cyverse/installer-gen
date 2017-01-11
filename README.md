@@ -23,4 +23,6 @@ specify the location on the command line, the user will be asked.
 If SETUP_SCRIPT is provided, the absolute path to the contents of TGZ will be 
 exported in the variable INSTALL_BASE.
 
+## Dependencies
 
+gen-installer requires bash and tar to be installed.

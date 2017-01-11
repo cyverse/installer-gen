@@ -62,7 +62,7 @@ then
 fi
 
 cat - "$Tgz" <<EOS >"$Installer"
-#! /bin/sh
+#! /bin/bash
 
 set -e
 
